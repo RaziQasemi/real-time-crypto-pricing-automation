@@ -1,0 +1,155 @@
+{
+  "name": "Every 5 h  Personalized Email",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "id": "1d8ea1a1-31cf-43ad-8e83-183373da4887",
+      "name": "Every Minute Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "price",
+        "baseCurrencies": [
+          "bitcoin",
+          "ethereum",
+          "binancecoin",
+          "cardano",
+          "solana",
+          "ripple",
+          "polkadot",
+          "dogecoin",
+          "avalanche-2",
+          "chainlink"
+        ],
+        "quoteCurrencies": [
+          "usd"
+        ],
+        "options": {}
+      },
+      "id": "4c16c9da-fbcc-4681-b41b-eddde5410e34",
+      "name": "Get Crypto Prices",
+      "type": "n8n-nodes-base.coinGecko",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailSubject",
+              "value": "={{ '💰 قیمت ارزهای دیجیتال - ' + $now.format('HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailBody",
+              "value": "=<h2>قیمت لحظه‌ای ارزهای مهم</h2><ul><li><strong>Bitcoin (BTC):</strong> ${{ $json.bitcoin.usd }}</li><li><strong>Ethereum (ETH):</strong> ${{ $json.ethereum.usd }}</li><li><strong>Binance Coin (BNB):</strong> ${{ $json.binancecoin.usd }}</li><li><strong>Cardano (ADA):</strong> ${{ $json.cardano.usd }}</li><li><strong>Solana (SOL):</strong> ${{ $json.solana.usd }}</li><li><strong>Ripple (XRP):</strong> ${{ $json.ripple.usd }}</li><li><strong>Polkadot (DOT):</strong> ${{ $json.polkadot.usd }}</li><li><strong>Dogecoin (DOGE):</strong> ${{ $json.dogecoin.usd }}</li><li><strong>Avalanche (AVAX):</strong> ${{ $json['avalanche-2'].usd }}</li><li><strong>Chainlink (LINK):</strong> ${{ $json.chainlink.usd }}</li></ul><p><em>به‌روزرسانی شده در: {{ $now.format('yyyy-MM-dd HH:mm:ss') }}</em></p>",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "396f114b-8dec-4646-bc8c-49e91711627b",
+      "name": "Format Email Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "raziqasemi7@gmail.com",
+        "subject": "={{ $json.emailSubject }}",
+        "message": "={{ $json.emailBody }}",
+        "options": {}
+      },
+      "id": "11c8eb0f-5baa-4a4a-82f0-c6be1d6419d1",
+      "name": "Send Crypto Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        304
+      ],
+      "webhookId": "586b53d8-2424-4389-9b01-d74ce9f6a25b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PuR7LxNrbjbNLFf8",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every Minute Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Crypto Prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Crypto Prices": {
+      "main": [
+        [
+          {
+            "node": "Format Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send Crypto Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d59e2fad-65c5-4d4f-884a-88a978703390",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c2c60671e07feb84812f7cf6d4d69c06ab0766738a783573be30e270cc0bdb5a"
+  },
+  "id": "egy3eIMOP0EQiPw_9V4x_",
+  "tags": []
+}
